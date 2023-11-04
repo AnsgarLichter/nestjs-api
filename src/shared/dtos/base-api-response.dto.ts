@@ -10,7 +10,7 @@ export class BaseApiResponse<T> {
 export function SwaggerBaseApiResponse<T>(type: T): typeof BaseApiResponse {
   class ExtendedBaseApiResponse<T> extends BaseApiResponse<T> {
     @ApiProperty({ type })
-    public data: T;
+    public declare data: T;
   }
   // NOTE : Overwrite the returned class name, otherwise whichever type calls this function in the last,
   // will overwrite all previous definitions. i.e., Swagger will have all response types as the same one.
