@@ -1,5 +1,4 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { compare, hash } from 'bcrypt';
 import { plainToClass } from 'class-transformer';
 
 import { AppLogger } from '../../shared/logger/logger.service';
@@ -26,7 +25,12 @@ export class UserService {
 
     const user = plainToClass(User, input);
 
-    user.password = await hash(input.password, 10);
+    this.logger.log(ctx, `Hash password for user`);
+    user.password = await Bun.password.hash(input.password, {
+      algorithm: "bcrypt",
+      cost: 10
+    });
+    this.logger.log(ctx, `Password hashed`);
 
     this.logger.log(ctx, `calling ${UserRepository.name}.saveUser`);
     await this.repository.save(user);
@@ -45,11 +49,15 @@ export class UserService {
 
     this.logger.log(ctx, `calling ${UserRepository.name}.findOne`);
     const user = await this.repository.findOne({ where: { username } });
+    this.logger.log(ctx, `found ${user.username}`);
     if (!user) throw new UnauthorizedException();
 
-    const match = await compare(pass, user.password);
-    if (!match) throw new UnauthorizedException();
+    this.logger.log(ctx, `compare password for ${user.username}`);
+    const isMatch = await Bun.password.verify(pass, user.password);
+    this.logger.log(ctx, `password compared for ${user.username}`);
+    if (!isMatch) throw new UnauthorizedException();
 
+    this.logger.log(ctx, `password does match for ${user.username}`);
     return plainToClass(UserOutput, user, {
       excludeExtraneousValues: true,
     });
