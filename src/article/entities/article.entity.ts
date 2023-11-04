@@ -1,3 +1,4 @@
+import type { Relation } from 'typeorm';
 import {
   Column,
   CreateDateColumn,
@@ -29,5 +30,5 @@ export class Article {
   @ManyToOne(() => User, (user) => user.articles, {
     eager: true,
   })
-  author: User;
+  author: Relation<User>;
 }

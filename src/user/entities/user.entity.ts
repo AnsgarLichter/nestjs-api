@@ -1,3 +1,4 @@
+import type { Relation } from 'typeorm';
 import {
   Column,
   CreateDateColumn,
@@ -42,5 +43,5 @@ export class User {
   updatedAt: Date;
 
   @OneToMany(() => Article, (article) => article.author)
-  articles: Article[];
+  articles: Relation<Article[]>;
 }

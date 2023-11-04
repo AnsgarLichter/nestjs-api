@@ -123,6 +123,6 @@
       ".module.ts$"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "bun"
+    "testEnvironment": "node"
   }
 }
