@@ -1,4 +1,6 @@
 import * as dotenv from 'dotenv';
+import { Article } from 'src/article/entities/article.entity';
+import { User } from 'src/user/entities/user.entity';
 import { DataSource } from 'typeorm';
 
 dotenv.config();
@@ -10,7 +12,7 @@ const typeOrmConfig = new DataSource({
   database: process.env.DB_NAME,
   username: process.env.DB_USER,
   password: process.env.DB_PASS,
-  entities: [__dirname + '/src/**/entities/*.entity{.ts,.js}'],
+  entities: [User, Article],
   migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
   migrationsRun: false,
   synchronize: false,
