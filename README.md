@@ -1,26 +1,13 @@
-## NestJS Starter Kit [v2]
+# NEST API
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-![Build Badge](https://github.com/monstar-lab-oss/nestjs-starter-rest-api/workflows/build/badge.svg)
-![Tests Badge](https://github.com/monstar-lab-oss/nestjs-starter-rest-api/workflows/tests/badge.svg)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=monstar-lab-oss_nestjs-starter-rest-api&metric=alert_status)](https://sonarcloud.io/dashboard?id=monstar-lab-oss_nestjs-starter-rest-api)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=monstar-lab-oss_nestjs-starter-rest-api&metric=coverage)](https://sonarcloud.io/dashboard?id=monstar-lab-oss_nestjs-starter-rest-api)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=monstar-lab-oss_nestjs-starter-rest-api&metric=code_smells)](https://sonarcloud.io/dashboard?id=monstar-lab-oss_nestjs-starter-rest-api)
+An API to create posts for an user. This project is used to test the compatibility of Nest with [Bun](https://bun.sh/).
+You will find the Node.js version in the [main](https://github.com/AnsgarLichter/nestjs-api) branch and the version for Bun in the branch [migrate-to-bun](https://github.com/AnsgarLichter/nestjs-api/tree/migrate-to-bun).
 
-This starter kit has the following outline:
+This repository is based on the [NestJS Starter Kit [v2]](https://github.com/monstar-lab-oss/nestjs-starter-rest-api).
 
-- Monolithic Project.
-- REST API
+## Features
 
-This is a Github Template Repository, so it can be easily [used as a starter template](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template) for other repositories.
-
-## Sample implementations
-
-To view sample implementations based on this starter kit, please visit the [nestjs-sample-solutions](https://github.com/monstar-lab-oss/nestjs-sample-solutions) repository.
-
-## Starter kit Features
-
-One of our main principals has been to keep the starter kit as lightweight as possible. With that in mind, here are some of the features that we have added in this starter kit.
+This API includes the following features:
 
 | Feature                  | Info               | Progress |
 |--------------------------|--------------------|----------|
@@ -35,77 +22,56 @@ One of our main principals has been to keep the starter kit as lightweight as po
 | Auto-generated OpenAPI   | -                  | Done     |
 | Auto-generated ChangeLog | -                  | WIP      |
 
-Apart from these features above, our start-kit comes loaded with a bunch of minor awesomeness like prettier integration, commit-linting husky hooks, package import sorting, SonarCloud github actions, docker-compose for database dependencies, etc. :D
-
-## Consulting
-
-Most of the features added to this starter kit have already been tried out in production applications by us here at MonstarLab. Our production applications are more feature rich, and we constantly strive to bring those features to this OSS starter kit.
-
-If you would like to use a more feature rich starter kit, with more awesome features from Day 1, then please reach out to us and we can collaborate on it together as technology partners. :)
-
 ## Installation
 
-Note: when using docker, all the `npm` commands can also be performed using `./scripts/npm` (for example `./scripts/npm install`).
-This script allows you to run the same commands inside the same environment and versions than the service, without relying on what is installed on the host.
+Install the dependencies
 
 ```bash
-$ npm install
+npm install
 ```
 
-Create a `.env` file from the template `.env.template` file.
-
-Generate public and private key pair for jwt authentication:
-
-### With docker
-
-Run this command:
-```bash
-./scripts/generate-jwt-keys
-```
-
-It will output something like this. You only need to add it to your `.env` file.
-```
-To setup the JWT keys, please add the following values to your .env file:
-JWT_PUBLIC_KEY_BASE64="(long base64 content)"
-JWT_PRIVATE_KEY_BASE64="(long base64 content)"
-```
-
-### Without docker
+Generate JWT public and private key pair for jwt authentication.
 
 ```bash
-$ ssh-keygen -t rsa -b 2048 -m PEM -f jwtRS256.key
+ssh-keygen -t rsa -b 2048 -m PEM -f jwtRS256.key
 # Don't add passphrase
-$ openssl rsa -in jwtRS256.key -pubout -outform PEM -out jwtRS256.key.pub
+openssl rsa -in jwtRS256.key -pubout -outform PEM -out jwtRS256.key.pub
 ```
 
 You may save these key files in `./local` directory as it is ignored in git.
 
+Start an PostgreSQL server locally and create a new database:
+[PostgreSQL Documentation](https://www.postgresql.org/docs/current/tutorial-start.html)
+
+Create a .env file with the following properties:
+
+```dotenv
+JWT_PUBLIC_KEY_BASE64="<public key>"
+APP_PORT=<port>
+DB_HOST=<db host>
+DB_PORT=<db port>
+DB_NAME=<db name>
+DB_USER=<db user>
+DB_PASS=<db password>
+JWT_ACCESS_TOKEN_EXP_IN_SEC=<seconds>
+JWT_REFRESH_TOKEN_EXP_IN_SEC=<seconds>
+DEFAULT_ADMIN_USER_PASSWORD=<password>
+
+```
+
+
+
 Encode keys to base64:
 
 ```bash
-$ base64 -i local/jwtRS256.key
+base64 -i local/jwtRS256.key
 
-$ base64 -i local/jwtRS256.key.pub
-```
-
-Must enter the base64 of the key files in `.env`:
-
-```bash
-JWT_PUBLIC_KEY_BASE64=BASE64_OF_JWT_PUBLIC_KEY
-JWT_PRIVATE_KEY_BASE64=BASE64_OF_JWT_PRIVATE_KEY
+base64 -i local/jwtRS256.key.pub
 ```
 
 ## Running the app
 
-We can run the project with or without docker.
-
-### Local
-
-To run the server without Docker we need this pre-requisite:
-
-- Postgres server running
-
-Commands:
+The Postgres server must berunning for the app to work
 
 ```bash
 # development
@@ -118,65 +84,169 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-### Docker
+## Sending API requests
 
-```bash
-# build image
-$ docker build -t my-app .
+### Registration & Login
 
-# run container from image
-$ docker run -p 3000:3000 --volume 'pwd':/usr/src/app --network --env-file .env my-app
+#### Register
 
-# run using docker compose
-$ docker compose up
+| Property | Value                  |
+|----------|------------------------|
+| Endpoint | /api/v1/auth/register  |
+| Method   | POST                   |
+| Body     | User                   |
+| Response | Registered User        |
+
+```json
+{
+    "name": "<full name>",
+    "username": "<username>",
+    "password": "<password>",
+    "roles": "<roles: admin / user>",
+    "email": "<email>",
+    "isAccountDisabled": <boolean>
+}
 ```
 
-Learn more about Docker conventions [here](https://github.com/monstar-lab-group/nodejs-backend/blob/master/architecture/docker-ready.md). (WIP - Currently this is an internal org link.)
+#### Login
 
-## Test
+| Property | Value                  |
+|----------|------------------------|
+| Endpoint | /api/v1/auth/login     |
+| Method   | POST                   |
+| Body     | Username & Password    |
+| Response | Tokens                 |
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+```json
+{
+    "username": "<username>",
+    "password": "<password>"
+}
 ```
 
-## Migrations
+#### Refresh Token
 
-```bash
-# using docker
-$ docker compose exec app npm run migration:run
+| Property | Value                      |
+|----------|----------------------------|
+| Endpoint | /api/v1/auth/refresh-token |
+| Method   | POST                       |
+| Body     | Refresh Token              |
+| Response | Tokens                     |
 
-# generate migration (replace CreateUsers with name of the migration)
-$ npm run migration:generate --name=CreateUsers
-
-# run migration
-$ npm run migration:run
-
-# revert migration
-$ npm run migration:revert
+```json
+{
+    "refreshToken": "<token>"
+}
 ```
 
-## Architecture
+### Users
 
-- [Project Structure](./docs/project-structure.md)
+You have to supply a valid Bearer Token for the authorization check to work.
+If you don't have an user, please register first.
 
-## Contributors
+#### Read your own Profile
 
-- [Yash Murty](https://github.com/yashmurty)
-- [S M Asad Rahman](https://github.com/asad-mlbd)
-- [Tanveer Hassan](https://github.com/war1oc)
-- [Saad Bin Amjad](https://github.com/Saad-Amjad)
-- [Sivan Payyadakath](https://github.com/sivanpayyadakath)
-- [Sébastien Caparros](https://github.com/Seb-C)
+| Property | Value            |
+|----------|------------------|
+| Endpoint | /api/v1/users/me |
+| Method   | GET              |
+| Body     | -                |
+| Response | User             |
 
-## External Links
+#### Read all Users
 
-<a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo.svg" width="150" alt="Nest Logo" /></a>
+| Property | Value            |
+|----------|------------------|
+| Endpoint | /api/v1/users    |
+| Method   | GET              |
+| Body     | -                |
+| Response | All Users        |
 
-[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/dashboard?id=monstar-lab-oss_nestjs-starter-rest-api)
+#### Read an User
+
+| Property | Value              |
+|----------|--------------------|
+| Endpoint | /api/v1/users/{id} |
+| Method   | GET                |
+| Body     | -                  |
+| Response | User               |
+
+#### Update an User
+
+| Property | Value                  |
+|----------|------------------------|
+| Endpoint | /api/v1/articles/{id}  |
+| Method   | PATCH                  |
+| Body     | Username & Password    |
+| Response | User                   |
+
+```json
+{
+    "name": "<name>",
+    "password": "<password>"
+}
+```
+
+### Articles
+
+You have to supply a valid Bearer Token for the authorization check to work.
+If you don't have an user, please register first.
+
+#### Creating an Article
+
+| Property | Value            |
+|----------|------------------|
+| Endpoint | /api/v1/articles |
+| Method   | POST             |
+| Body     | Article          |
+| Response | Created Article  |
+
+```json
+{
+    "title": "<title>",
+    "post": "<post>"
+}
+```
+
+#### Read all Articles
+
+| Property | Value            |
+|----------|------------------|
+| Endpoint | /api/v1/articles |
+| Method   | GET              |
+| Body     | -                |
+| Response | All Articles     |
+
+#### Read an Article
+
+| Property | Value                 |
+|----------|-----------------------|
+| Endpoint | /api/v1/articles/{id} |
+| Method   | GET                   |
+| Body     | -                     |
+| Response | Article               |
+
+#### Update an Article
+
+| Property | Value                  |
+|----------|------------------------|
+| Endpoint | /api/v1/articles/{id}  |
+| Method   | PATCH                  |
+| Body     | Article                |
+| Response | Updated Book           |
+
+```json
+{
+    "title": "<title>",
+    "post": "<post>"
+}
+```
+
+#### Delete an Article
+
+| Property | Value                 |
+|----------|-----------------------|
+| Endpoint | /api/v1/articles/{id} |
+| Method   | DELETE                |
+| Body     | -                     |
+| Response | -                     |
