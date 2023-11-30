@@ -14,13 +14,9 @@ This API includes the following features:
 | Authentication           | JWT                | Done     |
 | Authorization            | RBAC (Role based)  | Done     |
 | ORM Integration          | TypeORM            | Done     |
-| DB Migrations            | TypeORM            | Done     |
 | Logging                  | winston            | Done     |
 | Request Validation       | class-validator    | Done     |
 | Pagination               | SQL offset & limit | Done     |
-| Docker Ready             | Dockerfile         | Done     |
-| Auto-generated OpenAPI   | -                  | Done     |
-| Auto-generated ChangeLog | -                  | WIP      |
 
 ## Installation
 
