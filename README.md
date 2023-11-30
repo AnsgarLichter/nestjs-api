@@ -16,7 +16,7 @@ This API includes the following features:
 | ORM Integration          | TypeORM            | Done     |
 | Logging                  | winston            | Done     |
 | Request Validation       | class-validator    | Done     |
-| Pagination               | SQL offset & limit | Done     |
+| Validations              | Joi                | Done     |
 
 ## Installation
 
